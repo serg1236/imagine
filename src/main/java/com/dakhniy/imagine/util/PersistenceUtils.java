@@ -3,17 +3,16 @@ package com.dakhniy.imagine.util;
 
 import java.util.List;
 
+
+import com.dakhniy.imagine.model.Image;
+import com.dakhniy.imagine.model.User;
+
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
-import models.Image;
-import models.User;
-import play.Logger;
-import play.db.jpa.JPA;
-
 public class PersistenceUtils {
 	
-	public static boolean isUserExists(String login){
+/*	public static boolean isUserExists(String login){
 		TypedQuery<User> query = JPA.em().createNamedQuery("get user by login", User.class);
 		query.setParameter("login", login);
 		return query.getResultList().size()>0;
@@ -55,6 +54,6 @@ public class PersistenceUtils {
 		query.setParameter("id", publicId);
 		image = query.getSingleResult();
 		return image;
-	}
+	}*/
 
 }

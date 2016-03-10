@@ -31,6 +31,8 @@ define(['./module'],function(services){
 			    FB.init({
 			      appId      : '1009612422439015',
 			      xfbml      : true,
+			      status     : true,
+			      cookie     : true,
 			      version    : 'v2.4'
 			    });
 			    var statusPromise = checkStatus();

@@ -11,8 +11,8 @@ public class MainController {
 
     @RequestMapping("/")
     public String hello(){
-        System.out.print("HEEEEEY");
         return "index";
     }
+
 
 }

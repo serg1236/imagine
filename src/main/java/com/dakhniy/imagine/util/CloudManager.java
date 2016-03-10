@@ -11,7 +11,7 @@ import org.apache.log4j.Logger;
 
 public class CloudManager {
 
-    private Logger log;
+    private Logger logger;
     private Cloudinary cloudinary;
     
     
@@ -21,7 +21,7 @@ public class CloudManager {
             uploadResult = cloudinary.uploader().upload(image,
                     ObjectUtils.asMap("transformation",new Transformation().crop("pad").width(width).height(height).background("black")));
         }catch(IOException e){
-            log.error(e.getMessage());
+            logger.error(e.getMessage());
         }
         return uploadResult;
     }
@@ -35,8 +35,8 @@ public class CloudManager {
         cloudinary.uploader().destroy(publicId, ObjectUtils.asMap("invalidate", true));
     }
 
-    public void setLog(Logger log) {
-        this.log = log;
+    public void setLogger(Logger logger) {
+        this.logger = logger;
     }
 
     public CloudManager(Map cloudParams) {

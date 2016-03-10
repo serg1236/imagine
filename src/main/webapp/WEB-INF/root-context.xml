@@ -3,17 +3,22 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:mvc="http://www.springframework.org/schema/mvc"
     xmlns:util="http://www.springframework.org/schema/util"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:jpa="http://www.springframework.org/schema/data/jpa"
     xsi:schemaLocation="http://www.springframework.org/schema/beans
     http://www.springframework.org/schema/beans/spring-beans.xsd
     http://www.springframework.org/schema/mvc
     http://www.springframework.org/schema/mvc/spring-mvc-4.1.xsd
     http://www.springframework.org/schema/util
-    http://www.springframework.org/schema/util/spring-util-3.2.xsd">
+    http://www.springframework.org/schema/util/spring-util-3.2.xsd
+    http://www.springframework.org/schema/data/jpa
+    http://www.springframework.org/schema/data/jpa/spring-jpa.xsd">
 
     <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
         <property name="locations">
             <list>
                 <value>classpath:cloudinary.properties</value>
+                <value>classpath:jdbc.properties</value>
             </list>
         </property>
         <property name="ignoreResourceNotFound" value="true" />
@@ -25,10 +30,51 @@
     <bean class="com.dakhniy.imagine.util.CloudManager">
         <constructor-arg>
             <map>
-                <entry key="cloud_name" value="${cloud_name}"/>
-                <entry key="api_key" value="${api_key}"/>
-                <entry key="api_secret" value="${api_secret}"/>
+                <entry key="cloud_name" value="${cloudinary.cloud_name}"/>
+                <entry key="api_key" value="${cloudinary.api_key}"/>
+                <entry key="api_secret" value="${cloudinary.api_secret}"/>
             </map>
         </constructor-arg>
+        <property name="logger">
+            <bean class="org.apache.log4j.Logger" factory-method="getLogger">
+                <constructor-arg type="java.lang.Class" value="com.dakhniy.imagine.util.CloudManager"/>
+            </bean>
+        </property>
     </bean>
+
+    <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="persistenceProviderClass">
+            <value type="java.lang.Class">org.hibernate.ejb.HibernatePersistence</value>
+        </property>
+        <property name="persistenceUnitName" value="myPersistenceUnit" />
+        <property name="packagesToScan">
+            <list>
+                <value>com.dakhniy.imagine.model</value>
+            </list>
+        </property>
+        <property name="jpaProperties">
+            <props>
+                <prop key="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</prop>
+                <prop key="hibernate.show_sql">true</prop>
+            </props>
+        </property>
+    </bean>
+
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="${jdbc.driverClassName}"/>
+        <property name="url" value="${jdbc.url}"/>
+        <property name="username" value="${jdbc.username}"/>
+        <property name="password" value="${jdbc.password}"/>
+    </bean>
+
+    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="entityManagerFactory" ref="entityManagerFactory"/>
+    </bean>
+
+    <jpa:repositories base-package="com.dakhniy.imagine.repisitory"/>
+
+    <bean id="userService" class="com.dakhniy.imagine.service.impl.UserServiceImpl" autowire="byType"/>
+    <bean id="imageService" class="com.dakhniy.imagine.service.impl.ImageServiceImpl" autowire="byType"/>
+
 </beans>
